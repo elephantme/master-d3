@@ -1,11 +1,14 @@
-const d3 = require('d3');
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import App from './app.vue';
+import routes from './routes';
 
-d3.select('body')
-  .append('svg')
-  .attr('width', 50)
-  .attr('height', 50)
-  .append('circle')
-  .attr('cx', 25)
-  .attr('cy', 25)
-  .attr('r', 25)
-  .style('fill', 'purple');
+Vue.use(VueRouter);
+
+const router = new VueRouter({routes});
+
+new Vue({
+    el: '#app',
+    router,
+    render: h => h(App)
+});
