@@ -12,7 +12,7 @@
             </div>
         </p>
 
-        <p>
+        <p class="clear">
             <h2>使用时间尺度</h2>
             <div class="demo">
                 <div id="title"><span>Linear Time Progression <br/></span><span>Mapping [01/01/2013, 12/31/2013] to [0, 1200]</span></div>
@@ -39,6 +39,35 @@
                 <div id="category20c" class="clear"></div>
             </div>
         </p>
+
+        <p class="clear">
+            <h2>字符串插值</h2>
+            <div class="demo">
+                <div class="clear"><span>Font Interpolation</span></div>
+                <div id="font"></div>
+            </div>
+        </p>
+
+        <p class="clear">
+            <h2>颜色插值</h2>
+            <div class="demo">
+                <div class="clear"><span>Color Interpolation</span></div>
+                <div id="color"></div>
+            </div>
+
+            <div class="demo">
+                <div class="clear"><span>Color Interpolation</span></div>
+                <div id="color-diverge"></div>
+            </div>
+        </p>
+
+        <p class="clear">
+            <h2>复合对象插值</h2>
+            <div class="demo">
+                <div class="clear">Compound Interpolation</div>
+                <div id="object"></div>
+            </div>
+        </p>
     </div>
 </template>
 
@@ -51,6 +80,9 @@
             this.demo01();
             this.demo02();
             this.demo03();
+            this.demo04();
+            this.demo05();
+            this.demo06();
         },
 
         methods: {
@@ -169,6 +201,107 @@
                 render(data, d3.scaleOrdinal(d3.schemeCategory20), "#category20");
                 render(data, d3.scaleOrdinal(d3.schemeCategory20b), '#category20b');
                 render(data, d3.scaleOrdinal(d3.schemeCategory20c), '#category20c');
+            },
+
+            demo04() {
+                function render(data, scale, selector) {
+                    d3.select(selector).selectAll('div.cell')
+                      .data(data)
+                      .enter()
+                      .append('div')
+                      .classed('cell', true)
+                      .append('span');
+
+                    d3.select(selector).selectAll('div.cell')
+                      .data(data)
+                      .exit()
+                      .remove();
+
+                    d3.select(selector).selectAll('div.cell')
+                      .data(data)
+                      .style('display', 'inline-block')
+                      .select('span')
+                      .style('font', d => scale(d))
+                      .text((d, i) => i);
+                }
+
+                const data = d3.range(0, 10);
+                const scale = d3.scaleLinear().domain([0, 10]).range([
+                    "italic bold 12px/30px Georgia, serif",
+                    "italic bold 120px/180px Georgia, serif"
+                ]);
+                render(data, scale, '#font');
+            },
+
+            demo05() {
+                function render(data, scale, selector) {
+                    d3.select(selector).selectAll('div.cell')
+                      .data(data)
+                      .enter()
+                      .append('div')
+                      .classed('cell', true)
+                      .append('span');
+
+                    d3.select(selector).selectAll('div.cell')
+                      .data(data)
+                      .exit()
+                      .remove();
+
+                    d3.select(selector).selectAll('div.cell')
+                      .data(data)
+                      .style('display', 'inline-block')
+                      .style('background-color', d => scale(d))
+                      .select('span')
+                      .text((d, i) => i);
+                }
+
+                const data = d3.range(0, 20);
+                const colorScale = d3.scaleLinear().domain([0, 20]).range(['white', '#4169e1']);
+                const divergingScale = (pivot) => {
+                    return d3.scaleLinear().domain([0, pivot, 20]).range(['white', '#4169e1', 'white']);
+                };
+
+                const scale = d3.scaleLinear().domain([0, 10]).range([
+                    "italic bold 12px/30px Georgia, serif",
+                    "italic bold 120px/180px Georgia, serif"
+                ]);
+
+                render(data, colorScale, '#color');
+                render(data, divergingScale(5), '#color-diverge');
+            },
+
+            demo06() {
+                function render(data, scale, selector) {
+                    d3.select(selector).selectAll('div.v-bar')
+                      .data(data)
+                      .enter()
+                      .append('div')
+                      .classed('v-bar', true)
+                      .append('span');
+
+                    d3.select(selector).selectAll('div.v-bar')
+                      .data(data)
+                      .exit()
+                      .remove();
+
+                    d3.select(selector).selectAll('div.v-bar')
+                      .data(data)
+                      .classed('v-bar',true)
+                      .style('height', d => scale(d).height)
+                      .style('background-color', d => scale(d).color)
+                      .select('span')
+                      .text((d, i) => i);
+                }
+
+                const data = d3.range(0, 20);
+                const scale = d3.scalePow().exponent(2)
+                    .domain([0, 20])
+                    .range([
+                        {color: '#add8e6', height: '15px'},
+                        {color: '#4169e1', height: '150px'}
+                    ]);
+
+                render(data, scale, '#object');
             }
         }
     };
@@ -178,8 +311,8 @@
     .cell{
         margin: 5px;
         padding: 6px;
-        width: 24px;
-        height: 16px;
+        /* width: 24px; */
+        /* height: 16px; */
         float: left;
         border: 1px solid #ccc;
     }
@@ -203,5 +336,13 @@
 
     .clear{
         clear: both;
+    }
+
+    .v-bar{
+        width: 20px;
+        float: left;
+        font-size: 10px;
+        color: #fff;
+        margin-left: 4px;
     }
 </style>
