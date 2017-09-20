@@ -3,6 +3,7 @@ import Ch04 from './cookbook/ch04/index.vue';
 import Ch05 from './cookbook/ch05/index.vue';
 import Ch06 from './cookbook/ch06/index.vue';
 import Line from './cookbook/ch08/line.vue';
+import Area from './cookbook/ch08/area.vue';
 
 const routes = [
     {
@@ -24,6 +25,10 @@ const routes = [
     {
         path: '/ch08/line',
         component: Line
+    },
+    {
+        path: '/ch08/area',
+        component: Area
     }
 ];
 
